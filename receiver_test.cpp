@@ -4,6 +4,7 @@
 #include "/usr/include/uhd/usrp/multi_usrp.hpp"
 #include <cstdio>
 #include <iostream>
+#include <string>
 #include <vector>
 #include <csignal>
 #include <fstream>
@@ -73,6 +74,24 @@ int main(int argc, char ** argv)
 		std::cout << "Rx sampling task could not be created" << std::endl;
 		return MAIN_ERROR_SAMPLING_TASK_NOT_CREATED;
 	}
+	
+	//------------------------------------------------
+	// Check and process input commands
+	//------------------------------------------------
+	std::string s;
+	for (;;)
+	{
+	std::cout << "Waiting for commands: ";
+	std::cin >> s;
+	//std::cout << s << std::endl;
+	if (s == "quit")
+		{
+		rx_task.stop();
+		break;
+		}
+	
+	}
+	
 	
 	//------------------------------------------------
 	//  Wait for thread completion
