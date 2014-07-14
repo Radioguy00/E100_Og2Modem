@@ -120,9 +120,15 @@ void * task_sampling::run()
 	size_t rx_num;
 	while(!exit_task)
 	{
+		// Lock the mutex correspondin to the current buffer
+		pthread_mutex_lock(&demod_buf_index_mutex);
+		demod_buf_index = current_buf ^1;
+		pthread_mutex_unlock(&demod_buf_index_mutex);
 		// Get the samples
 		size_t buf_size = g_inbuf[current_buf].size();		
 		rx_num = rx_stream->recv(&g_inbuf[current_buf].front(), buf_size, md, 5,false);
+		// Signal the denod task to start
+		pthread_cond_signal(&in_available);
 		
 		// We write the info to the log file
 		rx_log << std::endl;
@@ -131,7 +137,7 @@ void * task_sampling::run()
 
 		// We write the data to the binary data file in an unformatted way
 		// Fromat of data is I16Q16I16Q16....
-		rx_data.write(reinterpret_cast<const char*>(&(g_inbuf[current_buf].front())), g_inbuf[current_buf].size()*sizeof(input_buf_t::value_type)); 
+		//rx_data.write(reinterpret_cast<const char*>(&(g_inbuf[current_buf].front())), g_inbuf[current_buf].size()*sizeof(input_buf_t::value_type)); 
 		
 		// Switch buffer at each iteration
 		current_buf ^= 1;

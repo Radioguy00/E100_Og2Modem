@@ -28,6 +28,9 @@ typedef std::vector<std::complex<sampling_type> > input_buf_t;
 
 // Buffers to store the input samples in a ping-pong fashion
 EXTERN input_buf_t g_inbuf[2];
+EXTERN pthread_cond_t  in_available;   // Condition vairable to trigger the demod when data is available
+EXTERN int demod_buf_index;						// Indicates which buffer must be processed by the demodulator		
+EXTERN pthread_mutex_t demod_buf_index_mutex;   // Mutex on the variable which indicates the next buffer for the demod to work on
 
 
 

@@ -1,1 +1,1 @@
-<Project name="ModemCode"><File path="makefile"></File><File path="receiver_test.cpp"></File><File path="task_sampling.cpp"></File><File path="task_sampling.h"></File><File path="uhd_utilities.cpp"></File><File path="uhd_utilities.h"></File></Project>
+<Project name="ModemCode"><File path="makefile"></File><File path="receiver_test.cpp"></File><File path="task_sampling.cpp"></File><File path="task_sampling.h"></File><File path="uhd_utilities.cpp"></File><File path="uhd_utilities.h"></File><File path="task_demod.h"></File><File path="task_demod.cpp"></File></Project>

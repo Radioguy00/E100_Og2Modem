@@ -20,6 +20,7 @@ void sig_int_handler(int) {stop_signal_called = true;}
 
 
 #define MAIN_ERROR_SAMPLING_TASK_NOT_CREATED 1 ;
+#define MAIN_ERROR_DEMOD_TASK_NOT_CREATED 2;
 
 
 int main(int argc, char ** argv)
@@ -63,7 +64,24 @@ int main(int argc, char ** argv)
 	const int samps_per_buf = 10000;
 	g_inbuf[0].assign(samps_per_buf, 0);
 	g_inbuf[1].assign(samps_per_buf, 0);
-
+	
+	
+	//-----------------------------------------------
+	// Initialize mutex and condition variables
+	//-----------------------------------------------
+	pthread_condattr_t cond_attr;
+	pthread_condattr_init(&cond_attr);
+	pthread_cond_init(&in_available, &cond_attr);   // Condition vairable to trigger the demod when data is available
+	
+	pthread_mutesattr_t mutex_attr;
+	pthread_mutexattr_init(&mutex_attr);
+	pthread_mutex_init(&demod_buf_index_mutex, &mutex_attr);
+	
+	//-----------------------------------------------
+	// Initialization other globals
+	//-----------------------------------------------
+	demod_buf_index = 1;
+	
 	//-----------------------------------------------
 	// Start the rx sampling task
 	//-----------------------------------------------
@@ -75,6 +93,17 @@ int main(int argc, char ** argv)
 		return MAIN_ERROR_SAMPLING_TASK_NOT_CREATED;
 	}
 	
+	//-----------------------------------------------
+	// Start the demod task
+	//-----------------------------------------------
+	task_demod demod_task();
+	if(demod_task.start())
+	{
+		// An error occurred
+		std::cout << "Demod task could not be created" << std::endl;
+		return MAIN_ERROR_DEMOD_TASK_NOT_CREATED;
+	}
+
 	//------------------------------------------------
 	// Check and process input commands
 	//------------------------------------------------
@@ -87,6 +116,7 @@ int main(int argc, char ** argv)
 	if (s == "quit")
 		{
 		rx_task.stop();
+		demod_task.stop();
 		break;
 		}
 	

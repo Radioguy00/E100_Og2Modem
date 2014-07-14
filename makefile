@@ -18,8 +18,8 @@
 e100test: test_routines.o
 	g++ -L /usr/lib -l uhd -o e100test test_routines.cpp
 
-rxtest: receiver_test.o uhd_utilities.o task_sampling.o
-	g++ -g -L /usr/lib -l uhd -lpthread -o rxtest  receiver_test.cpp uhd_utilities.cpp task_sampling.cpp
+rxtest: receiver_test.o uhd_utilities.o task_sampling.o task_demod.o
+	g++ -g -L /usr/lib -l uhd -lpthread -o rxtest  receiver_test.cpp uhd_utilities.cpp task_sampling.cpp task_demod.cpp
 	
 serialtest: serial_port_test.o 	
 	g++ -g -L /usr/lib -l uhd -o serial_port_test serial_port_test.cpp
